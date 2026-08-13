@@ -86,6 +86,21 @@ export type Proyecto = {
 
 /* Funciones de recoleccion */
 
+function shuffle<T>(arr: T[]): T[] {
+	const copy = [...arr];
+	for (let i = copy.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[copy[i], copy[j]] = [copy[j], copy[i]];
+	}
+	return copy;
+}
+
+export function getContribuidores(): Contribuidor[] {
+	const contribuidores = contribuidoresJSON as Contribuidor[];
+	const sinBots = contribuidores.filter((c) => !c.login.endsWith('[bot]'));
+	return shuffle(sinBots);
+}
+
 export function getProyectos(): [Proyecto[], string[]] {
 	const repositorios = reposJSON as Repositorio[];
 	const contribuciones = constribucionesJSON as Contribuciones;
@@ -95,6 +110,7 @@ export function getProyectos(): [Proyecto[], string[]] {
 	const proyectosProcesados = repositorios.map((repo) => {
 		const contribuidoresRepo = contribuciones.repos[repo.name] ?? {};
 		const peopleContribuidores = (Object.keys(contribuidoresRepo) || [])
+			.filter((nombre) => !nombre.endsWith('[bot]'))
 			.map((nombre) => {
 				const p = fullPeople.get(nombre);
 				if (!p) return null;

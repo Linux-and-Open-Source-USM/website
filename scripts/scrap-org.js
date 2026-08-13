@@ -119,7 +119,7 @@ async function run() {
 				const repoContribMap = {};
 
 				for (const user of contributorsData) {
-					if (!user.login || user.login === 'dependabot[bot]') continue;
+					if (!user.login || user.login.endsWith('[bot]')) continue;
 
 					repoContribMap[user.login] = user.contributions;
 

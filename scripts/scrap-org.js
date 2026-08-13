@@ -93,9 +93,9 @@ async function run() {
 				issues: repo.issues.totalCount,
 				pullRequests: repo.pullRequests.totalCount,
 				latestRelease: repo.latestRelease,
-				license: repo.licenseInfo.name || '',
-				repositoryTopics: repo.repositoryTopics.nodes.map((n) => n.topic.name) || [],
-				languages: repo.languages.edges || [],
+				license: repo.licenseInfo?.name || '',
+				repositoryTopics: repo.repositoryTopics?.nodes.map((n) => n.topic.name) || [],
+				languages: repo.languages?.edges || [],
 				custom_properties: customPropsMap[repo.name] || {},
 				homepage: homepagesMap[repo.name] || ''
 			}));
@@ -119,7 +119,7 @@ async function run() {
 				const repoContribMap = {};
 
 				for (const user of contributorsData) {
-					if (!user.login) continue;
+					if (!user.login || user.login.endsWith('[bot]')) continue;
 
 					repoContribMap[user.login] = user.contributions;
 

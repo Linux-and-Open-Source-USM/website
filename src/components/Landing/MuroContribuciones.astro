@@ -1,0 +1,68 @@
+---
+import { getContribuidores } from '@/utils/collect';
+import GitHub from '@/components/GitHub.astro';
+
+const contribuidores = getContribuidores();
+
+const avatares = contribuidores.map((c) => ({
+	login: c.login,
+	html_url: c.html_url,
+	avatar_url: c.avatar_url,
+	rotation: Math.round((Math.random() * 8 - 4) * 10) / 10
+}));
+---
+
+<section id="muro" class="bg-base-200">
+	<div class="container mx-auto px-4 py-16">
+		<div class="mb-12">
+			<h2 class="mb-2 font-heading text-4xl font-bold text-base-content">Muro de Contribuciones</h2>
+			<p class="text-base-content/70">
+				Cada persona que hizo crecer nuestros proyectos con su código.
+			</p>
+		</div>
+
+		<div class="muro columns-2 gap-6 space-y-6 [column-fill:balance] sm:columns-3 md:columns-4">
+			{
+				avatares.map((a) => (
+					<a
+						href={a.html_url}
+						target="_blank"
+						rel="noopener noreferrer"
+						title={a.login}
+						aria-label={`Perfil de GitHub de ${a.login}`}
+						class="muro-item group flex break-inside-avoid items-center gap-3 rounded-full border border-base-content/10 bg-base-100 py-1.5 pr-4 pl-1.5 shadow-sm"
+						style={`--r: ${a.rotation}deg`}
+					>
+						<img
+							src={a.avatar_url}
+							alt={a.login}
+							loading="lazy"
+							decoding="async"
+							class="h-10 w-10 shrink-0 rounded-full border border-base-content/10 bg-base-100 object-cover sm:h-12 sm:w-12"
+						/>
+						<span class="truncate text-sm font-medium text-base-content">{a.login}</span>
+						<GitHub class="ml-auto h-4 w-4 shrink-0 text-base-content/40 transition-colors group-hover:text-base-content" />
+					</a>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.muro-item {
+		transform: rotate(var(--r, 0deg)) scale(1);
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
+	}
+
+	.muro-item:hover {
+		z-index: 10;
+		transform: rotate(var(--r, 0deg)) scale(1.06);
+	}
+
+	.muro-item:hover img {
+		box-shadow: 0 0 0 2px hsl(var(--p));
+	}
+</style>
